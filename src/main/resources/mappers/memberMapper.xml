@@ -1,0 +1,27 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ses.test3.dao.MemberDAO">
+
+<!-- 회원정보 저장 -->
+<insert id="insert" parameterType="Member">
+    insert into sseTest2 (
+		memberid
+		, memberpw
+		, membername
+	) 
+    values (
+		#{memberid}
+		, #{memberpw}
+		, #{membername}
+	)
+</insert>
+
+<select id="getId" resultType="String">
+	select memberid 
+	from (select * from sseTest2 order by inputdate desc)
+	where rownum = 1
+</select>
+
+</mapper>

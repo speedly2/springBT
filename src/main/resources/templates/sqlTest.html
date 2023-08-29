@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script th:src="@{/js/jquery-3.6.0.js}"></script>
+<script>
+	$(document).ready(function(){
+		$('#deleteBtn').on('click', function() {
+			$.ajax({
+				url: 'sqltestDelete',
+				type: 'GET',
+				dataType: 'json',
+				success: function(result) {
+					console.log(result);
+					
+					let str = '<table>';
+					str += '<tr><th>이름</th><th>나이</th></tr>';
+					$.each(result, function(i, item) {
+						str += `<tr><td>${item.name}</td><td>${item.age}</td></tr>`;
+					})
+					str += '</table>';
+					
+					$('#result').html(str);
+				}, error: function(err){
+					console.log("실패: " + err);
+				}
+			})
+		});
+		$('#insertBtn').on('click', function() {
+			let objArr = [
+				{ name: '홍길동', age: 10 },
+				{ name: '이순신', age: 20 },
+				{ name: '고구마', age: 30 }
+/* 				{ 'name': '홍길동', 'age': 10 },
+				{ 'name': '이순신', 'age': 20 },
+				{ 'name': '고구마', 'age': 30 }			 */
+			];
+			console.log(objArr);
+			
+			$.ajax({
+				url: 'sqlTest',
+				type: 'POST',
+				data: JSON.stringify(objArr),
+				contentType: 'application/json;charset=UTF-8',
+				dataType: 'json',
+				success: function(result) {
+					console.log(result);
+					
+					let str = '<table>';
+					str += '<tr><th>이름</th><th>나이</th></tr>';
+					$.each(result, function(i, item) {
+						str += `<tr><td>${item.name}</td><td>${item.age}</td></tr>`;
+					})
+					str += '</table>';
+					
+					$('#result').html(str);
+				}, error: function(err){
+					console.log("실패: " + err);
+				}
+			});
+			
+		});
+		$('#insertBtn2').on('click', function() {
+			$.ajax({
+				url: 'sqlTest2',
+				type: 'POST',
+				dataType: 'json',
+				success: function(result) {
+					console.log(result);
+					
+					let str = '<table>';
+					str += '<tr><th>번호</th><th>이름</th><th>나이</th></tr>';
+					$.each(result, function(i, item) {
+						str += `<tr><td>${item.seq}</td><td>${item.name}</td><td>${item.age}</td></tr>`;
+					})
+					str += '</table>';
+					
+					$('#result2').html(str);
+				}, error: function(err){
+					console.log("실패: " + err);
+				}
+			});
+			
+		});
+	})
+</script>
+<style>
+	table th, td {
+		border: 1px dotted lightgray;
+		width: 100px;
+		height: 70px;
+	}
+</style>
+</head>
+<body>
+
+	<!-- https://m.blog.naver.com/10hsb04/221708690010 -->
+	<h2>list를 파라미터로 줬을때 동적sql(foreach)을 사용하여 한번에 여러개 insert하기</h2>
+	
+	<button id="insertBtn">insert</button>
+	<button id="deleteBtn">delete</button>
+	<div id="result"></div>
+	
+	<br><br><hr><br>
+	<h2>동적SQL(foreach) 사용시 시퀀스 중복문제</h2>
+	<button id="insertBtn2">insert2</button>
+	<div id="result2"></div>
+	
+</body>
+</html>

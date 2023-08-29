@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Ajax</title>
+<script th:src="@{/js/jquery-3.6.0.js}"></script>
+<script type="text/javascript">
+	/* $(document).ready(function() {
+		alert('aa');
+	}); */
+	$(function() {
+		init();
+		$('#formBtn').on('click', formSubmit);
+	});
+
+	function init() {
+		$.ajax({
+			url: 'list',
+			type: 'get',
+			dataType: 'json',
+			success: function(listData) {
+				let str = '<table>';
+				$.each(listData, function(i, item){
+					str += '<tr>';
+					str += '<td>' + i + '</td>';
+					str += '<td>' + item.name + '</td>';
+					str += '<td>' + item.age + '</td>';
+					str += '</tr>';
+				});
+				str += '</table>';
+				
+				$('#result').html(str);
+			},
+			error: function() {
+				console.log('list 불러오기 실패');
+			}
+		})
+	}
+	
+	function formSubmit() {
+		let name = $('#name').val();
+		let age = document.querySelector('#age').value;
+		
+		console.log("name: " + name + ", age: " + age);
+		
+		$.ajax({
+			url: 'reply',
+			type: 'post',
+			data: {name: name, age: age},
+			success: function(data) {
+				console.log(data);
+				console.log('등록');
+				$('#name').val('');
+				$('#age').val('');
+				init();
+			},
+			error: function(e) {
+				console.log('실패');
+				console.log(JSON.stringify(e));
+			}
+		});
+	}
+	
+	function test1() {
+		console.log('서버로 문자열 주고 받기');
+		$.ajax({
+			url: 'ajax1',
+			type: 'get',
+			data: { str: '문자열' },
+			dataType: 'text',
+			success: function(data) {
+				console.log(data);
+			},
+			error: function(e) {
+				console.log(JSON.stringify(e));
+			}
+		});
+	}
+	
+	
+</script>
+</head>
+<body>
+	<h1>Ajax</h1>
+	
+	<a href="javascript:test1()">서버로 문자열 주고 받기</a>
+	
+	<form id="replyForm">
+		이름 <input type="text" name="name" id="name">
+		나이 <input type="text" name="age" id="age">
+			<input type="button" id="formBtn" value="등록">
+	</form>
+	
+	<div id="result"></div>
+</body>
+</html>

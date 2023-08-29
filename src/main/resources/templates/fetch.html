@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Fetch</title>
+<script defer>
+	window.onload = function() {
+		let btn = document.querySelector("#btn");
+		let btn2 = document.querySelector("#btn2");
+		
+		//문자열
+		btn.addEventListener("click", function(){
+			fetch("http://localhost:9696/test3/fetchTest?clientText=client")
+			.then((response) => response.text())	//text 받기
+			.then(data => {
+				console.log(data);
+				let result = document.querySelector('#result');
+				result.innerHTML = data;
+			});
+		})
+		
+		//객체
+		btn2.addEventListener("click", function(){
+			fetch("http://localhost:9696/test3/fetchTest2"
+				, {
+					method: "POST",
+					body: JSON.stringify({
+						name: "아무개",
+						age: 0
+					}),
+					headers: {
+						"Content-type": "application/json;charset=utf-8"
+					}
+				}
+			)
+			.then((response) => response.json())	//json 받기
+			.then(data => {
+				console.log(data.name);
+				console.log(data.age);
+				let result = document.querySelector('#result');
+				result.innerHTML = "이름: " + data.name + ", 나이: " + data.age;
+			});
+		})
+		
+		//객체 배열
+		btn3.addEventListener("click", function(){
+			
+			const info = [ { name: "Kim" , age: 20 },
+						   { name: "Lee" , age: 30 },
+						   { name: "Park", age: 40 }  ];
+			
+			fetch("http://localhost:9696/test3/fetchTest3"
+				, {
+					method: "POST",
+					body: JSON.stringify(info),
+					headers: {
+						"Content-type": "application/json;charset=utf-8"
+					}
+				}
+			)
+			.then((response) => response.json())	//json 받기
+			.then(data => {
+				console.log(data);
+				let result = document.querySelector('#result');
+				let str = '';
+				for(dt of data) {
+					str += "이름: " + dt.name + ", 나이: " + dt.age + "<br>";
+				}
+				
+				result.innerHTML = str;
+			});
+		})
+	}
+
+	
+</script>
+</head>
+<body>
+	<h1>fetch</h1>
+	<input type="button" value="문자열 받기" id="btn">
+	<input type="button" value="객체 받기" id="btn2">
+	<input type="button" value="객체배열 받기" id="btn3">
+	<hr>
+	<div id="result"></div>
+</body>
+</html>

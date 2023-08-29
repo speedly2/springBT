@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Modal</title>
+<style>
+#modalOpenButton, #modalCloseButton {
+	cursor: pointer;
+}
+
+#modalCloseButton {
+	float: right;
+}
+
+#modalCloseButton:hover {
+	color: red;
+	float: right;
+}
+
+#modalContainer {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+#modalContent {
+	background-color: #ffffff;
+	width: 500px;
+	height: 350px;
+	padding: 15px;
+	position: absolute;
+}
+
+#modalContainer.hidden {
+	display: none;
+}
+
+#modalContainer.hidden {
+	display: none;
+}
+</style>
+<script>
+	window.onload = function() {
+		
+		const modalOpenButton = document.getElementById('modalOpenButton');
+		const modalCloseButton = document.getElementById('modalCloseButton');
+		const modal = document.getElementById('modalContainer');
+
+		modalOpenButton.addEventListener('click', () => {
+		  modal.classList.remove('hidden');
+		});
+
+		modalCloseButton.addEventListener('click', () => {
+		  modal.classList.add('hidden');
+		});
+		
+		
+		let md = document.querySelector("#modalContent");
+		modalCloseButton.addEventListener('click', () => {
+			if(md.has(e.target).length === 0){
+			  modal.classList.add('hidden');
+			}
+		});
+	}
+</script>
+</head>
+<body>
+
+	<h1>Modal</h1>
+
+	<input type="button" id="modalOpenButton" value="클릭">
+
+	<div id="modalContainer" class="hidden">
+		<div id="modalContent">
+			<button id="modalCloseButton">X</button>
+			<p>Modal.</p>
+		</div>
+	</div>
+</body>
+</html>

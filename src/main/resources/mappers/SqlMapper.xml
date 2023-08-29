@@ -1,0 +1,46 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ses.test3.dao.SqlDAO">
+
+<!-- 정보 저장 -->
+<insert id="insertInfo" parameterType="list">
+    insert all 
+	<foreach collection="list" index="index" item="infoVO">
+	    into info (
+			name
+			, age
+		) 
+	    values 
+	    (
+			#{infoVO.name}
+			, #{infoVO.age}
+		)
+	</foreach>
+	select * from dual
+</insert>
+
+<insert id="insertSeqMember" parameterType="list">
+	insert all
+	<foreach collection="list" index="index" item="SeqMember">
+		into seqmember(seq, name, age) values(
+			seqmember_seq.nextval, #{SeqMember.name}, #{SeqMember.age}
+		)
+	</foreach>
+	select * from dual
+</insert>
+
+<select id="selectInfo" resultType="Info">
+	select * from info
+</select>
+
+<select id="selectSeqMember" resultType="SeqMember">
+	select * from seqmember
+</select>
+
+<delete id="deleteInfo">
+	delete info
+</delete>
+
+</mapper>

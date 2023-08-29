@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="google-signin-client_id"
+	content="330865838170-9b686p9jptl6edkdcv7vop58o60c1b15.apps.googleusercontent.com">
+<title>Insert title here</title>
+<!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
+<script defer th:src="@{/js/jquery-3.6.0.js}"></script>
+<script>
+	function sendForm() {
+		let memberid = document.querySelector('#memberid').value;
+
+		$.ajax({
+			url: '/test3/saveEvent',
+			type: 'get',
+			data : { memberid },
+			dataType: 'text',
+		   	contentType : "application/json; charset=UTF-8",
+			success: function(message) {
+				console.log(JSON.stringify(message));
+			}, error: function(e) {
+				console.log(JSON.stringify(e));
+				return false;
+			}
+		});
+	    return true;
+	}
+</script>
+
+</head>
+<body>
+	<h1>로그인</h1>
+
+	<form th:action="@{/member/login}" method="post"
+		onsubmit="return sendForm();">
+		ID:<input type="text" name="memberid" id="memberid"><br>
+		PW:<input type="password" name="memberpw"><br> <input
+			type="submit" value="로그인">
+	</form>
+	<!-- <a th:href="@{google/login}">구글 로그인</a> -->
+	<a href="javascript:GoogleLogin()">구글 로그인</a>
+	<a href="oauth2/authorization/google">구글 로그인2</a>
+
+
+<ul>
+ <li id="GgCustomLogin">
+  <!-- 가상URL생성, 페이지 이동X -->
+  <a href="javascript:void(0)">
+   <span>Login with Google</span>
+  </a>
+ </li>
+</ul>
+
+<script>
+//처음 실행하는 함수
+function init() {
+	gapi.load('auth2', function() {
+		gapi.auth2.init();
+		options = new gapi.auth2.SigninOptionsBuilder();
+		options.setPrompt('select_account');
+        // 추가는 Oauth 승인 권한 추가 후 띄어쓰기 기준으로 추가
+		options.setScope('email profile openid https://www.googleapis.com/auth/user.birthday.read');
+        // 인스턴스의 함수 호출 - element에 로그인 기능 추가
+        // GgCustomLogin은 li태그안에 있는 ID, 위에 설정한 options와 아래 성공,실패시 실행하는 함수들
+		gapi.auth2.getAuthInstance().attachClickHandler('GgCustomLogin', options, onSignIn, onSignInFailure);
+	})
+}
+
+function onSignIn(googleUser) {
+	console.log('성공');
+	var access_token = googleUser.getAuthResponse().access_token
+	$.ajax({
+    	// people api를 이용하여 프로필 및 생년월일에 대한 선택동의후 가져온다.
+		url: 'https://people.googleapis.com/v1/people/me'
+        // key에 자신의 API 키를 넣습니다.
+		, data: {personFields:'birthdays', key:'AIzaSyDSyw1uWvlVLF5yAaGG1zzrXaoGas7BeQo', 'access_token': access_token}
+		, method:'GET'
+	})
+	.done(function(e){
+        //프로필을 가져온다.
+		var profile = googleUser.getBasicProfile();
+		console.log(profile)
+	})
+	.fail(function(e){
+		console.log(e);
+	})
+}
+function onSignInFailure(t){
+	console.log('실패');
+	console.log(t);
+}
+</script>
+<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+</body>
+</html>

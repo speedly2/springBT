@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title>fragment</title>
+<th:block layout:fragment="css">
+	<link th:href="@{/css/fragment_header.css}" rel="stylesheet">
+</th:block>
+
+</head>
+<body>
+
+	<section th:replace="~{/fragment_header.html :: container}"></section>
+
+	<h1>fragment</h1>
+
+	<div th:replace="/fragment_header.html :: fragment-header"></div>
+	
+	<div th:insert="~{/fragment_header.html :: fragment-header2('데이터1', '데이터2')}"></div>
+	
+	<div th:replace="~{/fragment_header.html :: fragment-header3(${obj})}"></div>
+</body>
+</html>

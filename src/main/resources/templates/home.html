@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>HOME</title>
+<script defer th:src="@{/js/jquery-3.6.0.js}"></script>
+<style>
+	/* Animation 서서히 올라오기 */
+	@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 100%, 0);
+        }
+        to {
+            opacity: 1;
+        }
+	}
+	/* Animation 서서히 내려가기 */	
+	@keyframes fadeOutDown {
+        from {
+            opacity: 1;
+            transform: translate3d(0, -100%, 0);
+        }
+        to {
+            opacity: 0;
+        }
+	}
+
+	.messageup {
+	    margin: 0 auto;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px 10px 0 0;
+        padding: 15px 20px;
+        position: absolute;
+        bottom: 0px;
+		animation: fadeInUp 2s;
+	}
+
+	.messagedown {	    
+		margin: 0 auto;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px 10px 0 0;
+        padding: 15px 20px;
+        position: absolute;
+        bottom: -50px;
+        animation: fadeOutDown 2s ease-out forwards;
+	}
+</style>
+</head>
+<body>
+	<h1>Home
+		<th:block sec:authorize="isAuthenticated()" th:text="|(${#authentication.name})|"></th:block>
+	</h1>
+	<input type="hidden" id="connect_user" th:value="${#authentication.name}">
+	
+	<ul>
+		<li sec:authorize="not isAuthenticated()"><a th:href="@{member/join}">회원가입</a></li>
+		<li sec:authorize="not isAuthenticated()"><a th:href="@{member/login}">로그인</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{member/logout}">로그아웃</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{ajax}">Ajax</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{fetch}">Fetch</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{promise}">Promise</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{chat}">Web Socket</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{sqlTest}">Sql Test</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{fragment}">Fragment</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{selectKey}">Select Key</a></li>
+		<li sec:authorize="isAuthenticated()"><a th:href="@{modal}">Modal</a></li>
+	</ul>
+	
+	<div id="container"></div>
+  	
+  	<script>
+  		let connect_user = document.querySelector("#connect_user");
+  		let userId = connect_user.value;
+  		console.log("접속한 Id: " + userId);
+
+  		if(userId != null && userId != "anonymousUser") {
+			const eventSource = new EventSource('http://localhost:9696/test3/sendEvent');
+			eventSource.addEventListener("connect", function(e) {
+				console.log("성공");
+				console.log(e.data);
+				
+				if(e.data === userId) {
+					console.log("현재 유저");
+		  			const container = document.getElementById('container');
+		  			container.classList.remove("noti-container");
+				} else { 
+					const container = document.getElementById('container');
+					container.innerHTML = JSON.stringify(e.data) + "님이 로그인하셨습니다.";
+					
+					container.classList.remove("messagedown");
+					container.classList.add("messageup");
+					setTimeout(() => {
+						container.classList.remove("messageup");
+						container.classList.add("messagedown");
+					}, 3000);
+				}
+
+			});
+  		} else {
+  			console.log("실패");
+  		}
+
+	</script>
+	<!-- sse로 구현하는 채팅
+	https://velog.io/@coastby/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-SSE%EB%A1%9C-%EA%B5%AC%ED%98%84%ED%95%98%EB%8A%94-%EC%B1%84%ED%8C%85 -->
+</body>
+</html>
