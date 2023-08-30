@@ -1,0 +1,9 @@
+diff a/src/main/resources/templates/github.html b/src/main/resources/templates/github.html	(rejected hunks)
+@@ -8,5 +8,6 @@
+ 
+ 	<h1>Git hub</h1>
+ 
++	<p>update</p>
+ </body>
+ </html>
+\ No newline at end of file
